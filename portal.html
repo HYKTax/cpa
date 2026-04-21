@@ -668,7 +668,17 @@
     });
   });
 
-  // Sign-in click — demo authentication that opens the dashboard
+  /* Portal sign-in — wired with SSO redirect option + demo fallback
+     SETUP OPTIONS (pick one):
+     Option A (TaxDome): Set PORTAL_URL to your TaxDome workspace URL.
+                         Example: 'https://yourfirm.taxdome.com/login'
+     Option B (Auth0/Clerk): Set PORTAL_URL to your authentication endpoint.
+     Option C (demo only): Leave PORTAL_URL empty to navigate to dashboard.html (current demo behavior).
+     
+     For production, consider removing the demo fallback entirely so users must
+     authenticate properly through your real system. */
+  const PORTAL_URL = ''; // ← Leave empty for demo, or paste TaxDome/Auth0 URL
+
   document.getElementById('signinBtn').addEventListener('click', (e) => {
     const email = document.getElementById('email').value.trim();
     const pw = document.getElementById('password').value.trim();
@@ -677,8 +687,29 @@
       return;
     }
     e.target.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Signing in...';
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
+
+    setTimeout(() => {
+      if (PORTAL_URL) {
+        // Redirect to real portal (TaxDome / Auth0 / etc.)
+        window.location.href = PORTAL_URL;
+      } else {
+        // Demo fallback
+        window.location.href = 'dashboard.html';
+      }
+    }, 700);
   });
+
+  /* Google SSO button — wire to OAuth provider */
+  const ssoBtn = document.querySelector('.sso-btn');
+  if (ssoBtn) {
+    ssoBtn.addEventListener('click', () => {
+      if (PORTAL_URL) {
+        window.location.href = PORTAL_URL;
+      } else {
+        alert('Google SSO setup:\n\n1. Configure OAuth in Google Cloud Console\n2. Set up SSO in your TaxDome/Auth0 settings\n3. Update PORTAL_URL in portal.html\n\nFor now, use email/password to sign in with demo credentials.');
+      }
+    });
+  }
 
   const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }}), { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));

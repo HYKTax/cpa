@@ -679,16 +679,45 @@
 
   searchInput.addEventListener('input',applyFilter);
 
-  /* Newsletter form */
+  /* Newsletter form — wired to Formspree
+     SETUP: create a Formspree form for newsletter signups, paste endpoint below.
+     Or replace with ConvertKit / Mailchimp endpoint if you prefer. */
+  const NEWSLETTER_ENDPOINT='https://formspree.io/f/YOUR_NEWSLETTER_FORM_ID'; // ← REPLACE THIS
   const newsForm=document.getElementById('newsForm');
   const newsSuccess=document.getElementById('newsSuccess');
-  newsForm.addEventListener('submit',(e)=>{
+  newsForm.addEventListener('submit',async(e)=>{
     e.preventDefault();
-    const email=document.getElementById('newsEmail').value.trim();
+    const emailEl=document.getElementById('newsEmail');
+    const email=emailEl.value.trim();
     if(!email)return;
-    newsSuccess.classList.add('show');
-    document.getElementById('newsEmail').value='';
-    setTimeout(()=>newsSuccess.classList.remove('show'),5000);
+
+    const btn=newsForm.querySelector('button[type="submit"]');
+    const originalText=btn?btn.innerHTML:'Subscribe';
+    if(btn){btn.disabled=true;btn.innerHTML='Subscribing…'}
+
+    try{
+      if(NEWSLETTER_ENDPOINT.includes('YOUR_NEWSLETTER_FORM_ID')){
+        console.warn('Newsletter endpoint not configured. Running in demo mode.');
+        await new Promise(r=>setTimeout(r,500));
+      }else{
+        const data=new FormData();
+        data.append('email',email);
+        data.append('_subject','New newsletter subscriber from hyktax.com');
+        const res=await fetch(NEWSLETTER_ENDPOINT,{
+          method:'POST',body:data,
+          headers:{'Accept':'application/json'}
+        });
+        if(!res.ok)throw new Error('Subscription failed');
+      }
+      newsSuccess.classList.add('show');
+      emailEl.value='';
+      setTimeout(()=>newsSuccess.classList.remove('show'),5000);
+    }catch(err){
+      alert('Sorry, something went wrong. Please try again in a moment.');
+      console.error(err);
+    }finally{
+      if(btn){btn.disabled=false;btn.innerHTML=originalText}
+    }
   });
 
   /* Topic tags filter */

@@ -1325,6 +1325,7 @@
       </div>
 
       <form class="contact-form reveal" id="contactForm">
+        <input type="hidden" name="_subject" value="New consultation request from hyktax.com"/>
         <div class="form-head">
           <h3>Request your free consultation</h3>
           <p>We'll reach out within 1 business day.</p>
@@ -1337,28 +1338,28 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="fname">First name</label>
-            <input type="text" id="fname" class="form-control" required />
+            <input type="text" id="fname" name="First Name" class="form-control" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="lname">Last name</label>
-            <input type="text" id="lname" class="form-control" required />
+            <input type="text" id="lname" name="Last Name" class="form-control" required />
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="email">Email</label>
-            <input type="email" id="email" class="form-control" required />
+            <input type="email" id="email" name="Email" class="form-control" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="phone">Phone</label>
-            <input type="tel" id="phone" class="form-control" />
+            <input type="tel" id="phone" name="Phone" class="form-control" />
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="service">What do you need help with?</label>
-          <select id="service" class="form-control" required>
+          <select id="service" name="Service Interest" class="form-control" required>
             <option value="">Select a service…</option>
             <option>Tax Preparation &amp; Filing</option>
             <option>Monthly Bookkeeping</option>
@@ -1372,7 +1373,7 @@
 
         <div class="form-group">
           <label class="form-label" for="message">Tell us a bit more</label>
-          <textarea id="message" class="form-control" placeholder="Entity type, industry, current situation — whatever's useful."></textarea>
+          <textarea id="message" name="Message" class="form-control" placeholder="Entity type, industry, current situation — whatever's useful."></textarea>
         </div>
 
         <button type="submit" class="form-submit">
@@ -1546,10 +1547,19 @@
     });
   });
 
-  /* Contact form */
+  /* Contact form — wired to Formspree
+     SETUP:
+     1. Sign up at https://formspree.io/ (free tier: 50/month)
+     2. Create a new form, copy the endpoint (e.g. https://formspree.io/f/abc12345)
+     3. Replace the FORMSPREE_ENDPOINT value below
+     4. That's it — submissions will email the address on your Formspree account. */
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; // ← REPLACE THIS
   const form = document.getElementById('contactForm');
   const successMsg = document.getElementById('successMsg');
-  form.addEventListener('submit', (e) => {
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Send';
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     // Validate
     const required = ['fname', 'lname', 'email', 'service'];
@@ -1565,11 +1575,37 @@
     });
     if (!valid) return;
 
-    // "Submit" (demo)
-    successMsg.classList.add('show');
-    form.querySelectorAll('.form-control').forEach(c => c.value = '');
-    setTimeout(() => successMsg.classList.remove('show'), 6000);
-    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Set loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending…';
+
+    try {
+      // If endpoint not yet configured, fall back to demo success
+      if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+        console.warn('Formspree endpoint not configured. Running in demo mode.');
+        await new Promise(r => setTimeout(r, 800));
+      } else {
+        const data = new FormData(form);
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Submission failed');
+      }
+
+      // Show success
+      successMsg.classList.add('show');
+      form.querySelectorAll('.form-control').forEach(c => c.value = '');
+      setTimeout(() => successMsg.classList.remove('show'), 6000);
+      successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+      alert('Sorry, something went wrong sending your request. Please email hello@hyktax.com directly or call +1 (305) 555-0199.');
+      console.error(err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+    }
   });
 </script>
 
