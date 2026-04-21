@@ -353,9 +353,9 @@
         <!-- LEFT: Meeting Info -->
         <div class="meeting-info">
           <div class="meeting-cpa">
-            <div class="meeting-avatar">H</div>
+            <div class="meeting-avatar">Y</div>
             <div>
-              <div class="meeting-cpa-name">Harshad Khanna, CPA</div>
+              <div class="meeting-cpa-name">Yatin M. Savani, CPA</div>
               <div class="meeting-cpa-role">Managing Partner</div>
             </div>
           </div>
@@ -440,34 +440,34 @@
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label" for="bfname">First name</label>
-                  <input type="text" id="bfname" class="form-control" required />
+                  <input type="text" id="bfname" name="First Name" class="form-control" required />
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="blname">Last name</label>
-                  <input type="text" id="blname" class="form-control" required />
+                  <input type="text" id="blname" name="Last Name" class="form-control" required />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label" for="bemail">Email</label>
-                  <input type="email" id="bemail" class="form-control" required />
+                  <input type="email" id="bemail" name="Email" class="form-control" required />
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="bphone">Phone</label>
-                  <input type="tel" id="bphone" class="form-control" />
+                  <input type="tel" id="bphone" name="Phone" class="form-control" />
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="form-label" for="bcompany">Business name (optional)</label>
-                <input type="text" id="bcompany" class="form-control" />
+                <input type="text" id="bcompany" name="Business Name" class="form-control" />
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label" for="btype">I'm a…</label>
-                  <select id="btype" class="form-control" required>
+                  <select id="btype" name="Client Type" class="form-control" required>
                     <option value="">Select…</option>
                     <option>Business owner</option>
                     <option>Self-employed / freelancer</option>
@@ -479,7 +479,7 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="bservice">I'm interested in…</label>
-                  <select id="bservice" class="form-control" required>
+                  <select id="bservice" name="Service Interest" class="form-control" required>
                     <option value="">Select…</option>
                     <option>Tax preparation</option>
                     <option>Monthly bookkeeping</option>
@@ -494,7 +494,7 @@
 
               <div class="form-group">
                 <label class="form-label" for="bnotes">What should we know? (optional)</label>
-                <textarea id="bnotes" class="form-control" placeholder="Entity type, state, current frustrations — anything that helps us prepare."></textarea>
+                <textarea id="bnotes" name="Notes" class="form-control" placeholder="Entity type, state, current frustrations — anything that helps us prepare."></textarea>
               </div>
 
               <div class="form-actions">
@@ -524,7 +524,7 @@
                   <span>Meeting</span><strong>30-min Consultation</strong>
                 </div>
                 <div class="confirm-detail-row">
-                  <span>With</span><strong>Harshad Khanna, CPA</strong>
+                  <span>With</span><strong>Yatin M. Savani, CPA</strong>
                 </div>
                 <div class="confirm-detail-row">
                   <span>Date</span><strong id="confirmDate">—</strong>
@@ -586,7 +586,7 @@
 <section class="testi-strip">
   <div class="container reveal">
     <div class="stars">★★★★★</div>
-    <blockquote>"Honestly the most useful 30 minutes I've ever spent with a CPA. Harshad spotted three things my last firm missed in the first ten minutes. We signed a Growth engagement that week."</blockquote>
+    <blockquote>"Honestly the most useful 30 minutes I've ever spent with a CPA. Yatin spotted three things my last firm missed in the first ten minutes. We signed a Growth engagement that week."</blockquote>
     <cite>— Marcus Lee · Founder, Northwind Software · Denver, CO</cite>
   </div>
 </section>
@@ -790,7 +790,13 @@
   document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
   document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
 
-  document.getElementById('bookForm').addEventListener('submit', (e) => {
+  /* Booking form — wired to Formspree
+     SETUP: create a second Formspree form for bookings, paste endpoint below.
+     Optionally set CALENDLY_URL to open Calendly instead. */
+  const BOOKING_ENDPOINT = 'https://formspree.io/f/YOUR_BOOKING_FORM_ID'; // ← REPLACE THIS
+  const CALENDLY_URL = ''; // Optional: paste a Calendly link (e.g. 'https://calendly.com/hyktax/30min') to redirect there instead
+
+  document.getElementById('bookForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const required = ['bfname','blname','bemail','btype','bservice'];
     let valid = true;
@@ -801,13 +807,45 @@
     });
     if (!valid) return;
 
-    // Populate confirmation
-    const dayLabel = `${fullDows[selectedDate.getDay()]}, ${monthNames[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`;
-    document.getElementById('confirmDate').textContent = dayLabel;
-    document.getElementById('confirmTime').textContent = `${selectedTime} EST`;
-    document.getElementById('confirmEmail').textContent = document.getElementById('bemail').value;
+    const submitBtn = e.target.querySelector('#toStep3');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Booking…';
 
-    goToStep(3);
+    // Build booking summary
+    const dayLabel = `${fullDows[selectedDate.getDay()]}, ${monthNames[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`;
+
+    try {
+      if (BOOKING_ENDPOINT.includes('YOUR_BOOKING_FORM_ID')) {
+        console.warn('Booking endpoint not configured. Running in demo mode.');
+        await new Promise(r => setTimeout(r, 700));
+      } else {
+        const data = new FormData(e.target);
+        data.append('_subject', `New booking: ${dayLabel} at ${selectedTime}`);
+        data.append('Meeting Date', dayLabel);
+        data.append('Meeting Time', `${selectedTime} ${document.getElementById('tzLabel').textContent}`);
+        const res = await fetch(BOOKING_ENDPOINT, {
+          method: 'POST', body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Booking failed');
+      }
+
+      // Populate confirmation screen
+      document.getElementById('confirmDate').textContent = dayLabel;
+      document.getElementById('confirmTime').textContent = `${selectedTime}`;
+      document.getElementById('confirmEmail').textContent = document.getElementById('bemail').value;
+      goToStep(3);
+
+      // If Calendly URL is set, open it in a new tab so user can pick a precise slot
+      if (CALENDLY_URL) setTimeout(() => window.open(CALENDLY_URL, '_blank'), 500);
+    } catch (err) {
+      alert('Sorry, something went wrong booking. Please email hello@hyktax.com or call +1 (305) 555-0199.');
+      console.error(err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
   });
 
   // Init
