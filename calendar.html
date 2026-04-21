@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tax Calendar — HYK Tax Client Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#F6F1E8;--cream-2:#EFE7D7;--ink:#0B1F33;--ink-soft:#17344E;
+    --brass:#B8894A;--brass-deep:#8E6633;--muted:#5B5952;--rule:#D8CFBC;
+    --success:#2D5E3E;--danger:#B94A4A;--warn:#B8894A;
+    --shadow:0 20px 60px -30px rgba(11,31,51,.35);
+    --serif:'Fraunces',ui-serif,Georgia,serif;
+    --sans:'DM Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.7;mix-blend-mode:multiply}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  input,select,textarea{font-family:inherit}
+
+  .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;position:relative;z-index:2}
+  .sidebar{background:var(--ink);color:var(--cream);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  .sb-brand{padding:24px 22px;border-bottom:1px solid rgba(246,241,232,.08);display:flex;align-items:center;gap:10px}
+  .sb-brand-mark{width:36px;height:36px;border-radius:50%;background:var(--cream);color:var(--ink);display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:14px;font-variation-settings:"SOFT" 100;position:relative}
+  .sb-brand-mark::after{content:'';position:absolute;inset:3px;border-radius:50%;border:1px solid var(--brass);opacity:.6}
+  .sb-brand-text{font-family:var(--serif);font-size:18px;font-weight:500;font-variation-settings:"SOFT" 30}
+  .sb-brand-text small{display:block;font-family:var(--sans);font-size:9px;letter-spacing:2px;color:var(--brass);font-weight:500;text-transform:uppercase;margin-top:2px}
+  .sb-search{padding:18px 16px}
+  .sb-search input{width:100%;padding:10px 14px 10px 36px;background:rgba(246,241,232,.06);border:1px solid rgba(246,241,232,.1);border-radius:10px;color:var(--cream);font-size:13px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F6F1E8' stroke-opacity='0.5' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;transition:.2s}
+  .sb-search input:focus{outline:none;border-color:var(--brass);background-color:rgba(246,241,232,.1)}
+  .sb-search input::placeholder{color:rgba(246,241,232,.4)}
+  .sb-section{padding:14px 16px 6px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brass);font-weight:600;opacity:.8}
+  .sb-nav{flex:1;overflow-y:auto;padding-bottom:20px}
+  .sb-nav a{display:flex;align-items:center;gap:12px;padding:11px 18px;font-size:14px;color:rgba(246,241,232,.8);transition:.15s;position:relative}
+  .sb-nav a:hover{background:rgba(246,241,232,.04);color:var(--cream)}
+  .sb-nav a.active{background:rgba(184,137,74,.12);color:var(--cream);font-weight:500}
+  .sb-nav a.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--brass);border-radius:0 3px 3px 0}
+  .sb-nav a svg{flex-shrink:0;color:var(--brass);opacity:.7}
+  .sb-nav a:hover svg,.sb-nav a.active svg{opacity:1}
+  .sb-badge{margin-left:auto;background:var(--brass);color:var(--ink);font-size:10px;font-weight:600;padding:2px 7px;border-radius:50px}
+  .sb-foot{border-top:1px solid rgba(246,241,232,.08);padding:16px;display:flex;align-items:center;gap:10px}
+  .sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--brass),var(--brass-deep));color:white;display:grid;place-items:center;font-family:var(--serif);font-weight:500;font-size:14px;flex-shrink:0}
+  .sb-user-name{font-size:13.5px;font-weight:500;color:var(--cream)}
+  .sb-user-role{font-size:11px;color:rgba(246,241,232,.5);margin-top:1px}
+  .sb-logout{margin-left:auto;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:rgba(246,241,232,.6);transition:.2s}
+  .sb-logout:hover{background:rgba(185,74,74,.15);color:#FF8888}
+
+  .main{display:flex;flex-direction:column;min-width:0;overflow-x:hidden}
+  .topbar{background:rgba(246,241,232,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);padding:14px 36px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:50}
+  .topbar-title{font-family:var(--serif);font-size:22px;font-weight:500;font-variation-settings:"SOFT" 50}
+  .topbar-spacer{flex:1}
+  .topbar-icon{width:38px;height:38px;border-radius:50%;background:white;border:1px solid var(--rule);display:grid;place-items:center;color:var(--ink);transition:.2s;position:relative}
+  .topbar-icon:hover{background:var(--cream-2);border-color:var(--brass)}
+  .topbar-icon .pip{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid white}
+  .mobile-toggle{display:none;width:38px;height:38px;border-radius:8px;align-items:center;justify-content:center;background:var(--ink);color:var(--cream)}
+
+  .content{padding:32px 36px 60px}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:20px;flex-wrap:wrap}
+  .page-head h1{font-family:var(--serif);font-size:32px;font-weight:400;line-height:1.1;font-variation-settings:"SOFT" 50,"opsz" 144;letter-spacing:-.5px;margin-bottom:6px}
+  .page-head h1 em{font-style:italic;color:var(--brass-deep);font-variation-settings:"SOFT" 100}
+  .page-head p{font-size:14.5px;color:var(--muted)}
+  .page-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{padding:10px 18px;border-radius:50px;font-size:13.5px;font-weight:500;display:inline-flex;align-items:center;gap:8px;transition:.2s;cursor:pointer;border:none;font-family:inherit}
+  .btn.primary{background:var(--ink);color:var(--cream)}
+  .btn.primary:hover{background:var(--brass-deep)}
+  .btn.ghost{background:white;color:var(--ink);border:1px solid var(--rule)}
+  .btn.ghost:hover{border-color:var(--brass);background:var(--cream-2)}
+  .btn.brass{background:var(--brass);color:var(--ink)}
+  .btn.brass:hover{background:var(--brass-deep);color:var(--cream)}
+
+  .panel{background:white;border:1px solid var(--rule);border-radius:16px;padding:24px}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:16px}
+  .panel-title{font-family:var(--serif);font-size:18px;font-weight:500;font-variation-settings:"SOFT" 50}
+  .panel-action{font-size:12.5px;color:var(--brass-deep);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+  .panel-action:hover{color:var(--ink)}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;background:white;border:1px solid var(--rule);border-radius:50px;padding:4px;width:fit-content;margin-bottom:24px}
+  .tab{padding:10px 18px;border-radius:50px;font-size:13px;color:var(--muted);font-weight:500;transition:.2s}
+  .tab.active{background:var(--ink);color:var(--cream)}
+
+  /* Tables */
+  table.data{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden;border:1px solid var(--rule)}
+  table.data th{background:var(--cream);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;text-align:left;padding:14px 18px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--rule)}
+  table.data td{padding:14px 18px;font-size:13.5px;border-bottom:1px solid var(--rule);vertical-align:middle}
+  table.data tr:last-child td{border-bottom:none}
+  table.data tr:hover td{background:var(--cream)}
+
+  /* Status pills */
+  .pill{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:50px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+  .pill.success{background:rgba(45,94,62,.12);color:var(--success)}
+  .pill.warn{background:rgba(184,137,74,.15);color:var(--brass-deep)}
+  .pill.danger{background:rgba(185,74,74,.12);color:var(--danger)}
+  .pill.info{background:rgba(11,31,51,.08);color:var(--ink-soft)}
+  .pill.muted{background:var(--cream-2);color:var(--muted)}
+
+  /* Empty state */
+  .empty{padding:60px 20px;text-align:center;color:var(--muted)}
+  .empty svg{margin:0 auto 16px;color:var(--rule)}
+  .empty h3{font-family:var(--serif);font-size:20px;color:var(--ink);font-weight:500;margin-bottom:6px;font-variation-settings:"SOFT" 50}
+  .empty p{font-size:14px;margin-bottom:20px}
+
+  .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;display:none}
+  .sidebar-overlay.active{display:block}
+
+  @media (max-width:960px){
+    .app{grid-template-columns:1fr}
+    .sidebar{position:fixed;left:0;top:0;width:280px;z-index:200;transform:translateX(-100%);transition:transform .3s ease}
+    .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.3)}
+    .mobile-toggle{display:flex}
+    .topbar{padding:12px 20px}
+    .content{padding:24px 20px 50px}
+    .page-head h1{font-size:26px}
+    table.data{font-size:12.5px}
+    table.data th,table.data td{padding:10px 12px}
+  }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-mark">H</div>
+      <div class="sb-brand-text">HYK Tax<small>CLIENT PORTAL</small></div>
+    </div>
+    <div class="sb-search">
+      <input type="text" placeholder="Search documents, tasks…" />
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Workspace</div>
+      <a href="dashboard.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard </a>
+      <a href="documents.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Documents </a>
+      <a href="returns.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Returns <span class="sb-badge">2</span></a>
+      <a href="bookkeeping.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Bookkeeping </a>
+      <a href="messages.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Messages <span class="sb-badge">3</span></a>
+      <a href="signatures.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13l2 2 4-4"/></svg> Signatures <span class="sb-badge">1</span></a>
+      <div class="sb-section">Tools</div>
+      <a href="projections.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Tax Projections </a>
+      <a href="calendar.html" class="active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Calendar </a>
+      <a href="help.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Help & Support </a>
+      <a href="settings.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings </a>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-avatar">MR</div>
+      <div>
+        <div class="sb-user-name">Miranda Reyes</div>
+        <div class="sb-user-role">Northwind Studios</div>
+      </div>
+      <a href="portal.html" class="sb-logout" aria-label="Sign out" title="Sign out">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sbOverlay"></div>
+  <main class="main">
+    <div class="topbar">
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">Tax Calendar</div>
+      <div class="topbar-spacer"></div>
+      <a href="help.html" class="topbar-icon" title="Help">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </a>
+      <a href="messages.html" class="topbar-icon" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="pip"></span>
+      </a>
+    </div>
+    <div class="content">
+<div class="page-head">
+  <div>
+    <h1>Tax Calendar</h1>
+    <p>Every deadline that affects you, customized to your filings.</p>
+  </div>
+  <div class="page-actions">
+    <button class="btn ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Sync to Google</button>
+    <button class="btn primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download .ics</button>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px">
+  <!-- UPCOMING DEADLINES -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Upcoming Deadlines</div></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;background:rgba(184,137,74,.08);border-left:3px solid var(--brass);border-radius:0 12px 12px 0">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--brass-deep);font-weight:600">Apr</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">23</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Sign &amp; e-file 2025 Form 1120-S</div>
+          <div style="font-size:12.5px;color:var(--muted)">3 days away · Action required</div>
+        </div>
+        <span class="pill warn">Urgent</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--rule);border-radius:12px">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600">Apr</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">30</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Florida sales tax return (March)</div>
+          <div style="font-size:12.5px;color:var(--muted)">10 days away · We file on your behalf</div>
+        </div>
+        <span class="pill info">Auto</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--rule);border-radius:12px">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600">May</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">15</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Form 941 — Q1 payroll tax return</div>
+          <div style="font-size:12.5px;color:var(--muted)">25 days away · Filed by HYK</div>
+        </div>
+        <span class="pill info">Auto</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--rule);border-radius:12px">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--brass-deep);font-weight:600">Jun</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">16</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Q2 estimated tax payment — $9,150</div>
+          <div style="font-size:12.5px;color:var(--muted)">57 days away · Pay via EFTPS</div>
+        </div>
+        <span class="pill muted">Pay</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--rule);border-radius:12px">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600">Jul</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">31</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Form 941 — Q2 payroll tax return</div>
+          <div style="font-size:12.5px;color:var(--muted)">102 days away · Filed by HYK</div>
+        </div>
+        <span class="pill info">Auto</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px;border:1px solid var(--rule);border-radius:12px">
+        <div style="width:54px;text-align:center;flex-shrink:0">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600">Sep</div>
+          <div style="font-family:var(--serif);font-size:24px;font-weight:500;line-height:1;font-variation-settings:\"SOFT\" 60">15</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px;margin-bottom:3px">Q3 estimated tax payment — $8,800</div>
+          <div style="font-size:12.5px;color:var(--muted)">148 days away</div>
+        </div>
+        <span class="pill muted">Pay</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND + STATUS -->
+  <div style="display:flex;flex-direction:column;gap:24px">
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Legend</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px">
+        <div style="display:flex;align-items:center;gap:10px"><span class="pill warn">Urgent</span><span style="color:var(--muted)">Within 7 days</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><span class="pill muted">Pay</span><span style="color:var(--muted)">You initiate payment</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><span class="pill info">Auto</span><span style="color:var(--muted)">HYK files for you</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><span class="pill success">Done</span><span style="color:var(--muted)">Completed</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">Recently Completed</div></div>
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:13px">
+        <div style="display:flex;justify-content:space-between"><div><div style="font-weight:500">Q1 estimated tax — $8,420</div><div style="font-size:11.5px;color:var(--muted)">Apr 15, 2026</div></div><span class="pill success" style="height:fit-content">Paid</span></div>
+        <div style="display:flex;justify-content:space-between"><div><div style="font-weight:500">FL sales tax (Feb)</div><div style="font-size:11.5px;color:var(--muted)">Mar 20, 2026</div></div><span class="pill success" style="height:fit-content">Filed</span></div>
+        <div style="display:flex;justify-content:space-between"><div><div style="font-weight:500">Form 1099 issuance</div><div style="font-size:11.5px;color:var(--muted)">Jan 31, 2026</div></div><span class="pill success" style="height:fit-content">Filed</span></div>
+        <div style="display:flex;justify-content:space-between"><div><div style="font-weight:500">W-2 distribution</div><div style="font-size:11.5px;color:var(--muted)">Jan 31, 2026</div></div><span class="pill success" style="height:fit-content">Filed</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sbOverlay');
+  const toggle = document.getElementById('mobileToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('active'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+  }
+
+</script>
+</body>
+</html>
