@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1F33"/>
+      <stop offset="100%" stop-color="#17344E"/>
+    </linearGradient>
+    <radialGradient id="brass-glow" cx="0.85" cy="0.15" r="0.5">
+      <stop offset="0%" stop-color="#B8894A" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#B8894A" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Grain texture -->
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0"/></filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#brass-glow)"/>
+  <rect width="1200" height="630" filter="url(#n)" opacity="0.5"/>
+
+  <!-- Logo mark (H in circle) -->
+  <g transform="translate(80, 80)">
+    <circle cx="40" cy="40" r="40" fill="#F6F1E8"/>
+    <circle cx="40" cy="40" r="34" fill="none" stroke="#B8894A" stroke-width="1.5" opacity="0.6"/>
+    <text x="40" y="54" font-family="Georgia, serif" font-size="40" font-weight="600" text-anchor="middle" fill="#0B1F33">H</text>
+  </g>
+  <text x="180" y="110" font-family="Georgia, serif" font-size="36" fill="#F6F1E8" font-weight="500">HYK Tax</text>
+  <text x="180" y="135" font-family="sans-serif" font-size="14" fill="#B8894A" letter-spacing="3">CPA · EST. 2009</text>
+
+  <!-- Eyebrow -->
+  <g transform="translate(80, 240)">
+    <rect x="0" y="0" width="280" height="36" rx="18" fill="#B8894A" fill-opacity="0.12" stroke="#B8894A" stroke-opacity="0.5"/>
+    <circle cx="20" cy="18" r="3" fill="#B8894A"/>
+    <text x="32" y="23" font-family="sans-serif" font-size="11" font-weight="600" letter-spacing="3" fill="#B8894A">FLORIDA CPA · ALL 50 STATES</text>
+  </g>
+
+  <!-- Main headline -->
+  <text x="80" y="340" font-family="Georgia, serif" font-size="76" fill="#F6F1E8" font-weight="400" font-style="italic">Precision tax and</text>
+  <text x="80" y="420" font-family="Georgia, serif" font-size="76" fill="#B8894A" font-weight="300" font-style="italic">accounting</text>
+  <text x="80" y="500" font-family="Georgia, serif" font-size="76" fill="#F6F1E8" font-weight="400">for the modern business.</text>
+
+  <!-- Footer -->
+  <line x1="80" y1="560" x2="1120" y2="560" stroke="#F6F1E8" stroke-opacity="0.15"/>
+  <text x="80" y="590" font-family="sans-serif" font-size="16" fill="#F6F1E8" opacity="0.7">hyktax.com · 15+ years · Licensed FL CPA · Global team</text>
+</svg>

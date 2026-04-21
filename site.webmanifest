@@ -1,0 +1,24 @@
+{
+  "name": "HYK Tax",
+  "short_name": "HYK Tax",
+  "description": "Florida CPA firm — tax, accounting, and advisory services.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1E8",
+  "theme_color": "#0B1F33",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

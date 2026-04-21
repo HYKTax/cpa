@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Block the portal area from search engines (these require authentication anyway)
+Disallow: /dashboard.html
+Disallow: /documents.html
+Disallow: /returns.html
+Disallow: /bookkeeping.html
+Disallow: /messages.html
+Disallow: /signatures.html
+Disallow: /projections.html
+Disallow: /calendar.html
+Disallow: /help.html
+Disallow: /settings.html
+
+Sitemap: https://hyktax.com/sitemap.xml

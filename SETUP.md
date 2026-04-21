@@ -189,3 +189,66 @@ Four endpoints to paste in, then you're live. Total setup time: about 20 minutes
 | `portal.html` | `const PORTAL_URL` | TaxDome / Auth0 URL |
 
 If an endpoint is left as the placeholder value, the site falls back to demo mode — so you can deploy safely even if you haven't finished configuring everything. Just don't leave it in demo mode after launch.
+
+---
+
+## 9. SEO & Launch Assets
+
+The site now ships with a full SEO package. Here's what's in place and what you need to know.
+
+### Assets added
+- **`favicon.svg`** — scalable browser-tab icon (the H-in-circle logo)
+- **`apple-touch-icon.svg`** — 180×180 home-screen icon for iOS
+- **`og-image.svg`** — 1200×630 social preview image (shows when links are shared on LinkedIn, WhatsApp, Twitter)
+- **`site.webmanifest`** — PWA manifest for "Add to Home Screen"
+- **`robots.txt`** — tells search engines which pages to index (blocks portal)
+- **`sitemap.xml`** — lists all 10 public pages with priorities for Google
+- **`404.html`** — branded error page (configure your host to serve this on 404s)
+
+### Per-page SEO (auto-applied to all public pages)
+Every public page now has:
+- Proper `<title>` and `<meta description>` tailored to the page
+- Canonical URL (`<link rel="canonical">`)
+- Open Graph tags (og:title, og:description, og:image) for link previews
+- Twitter Card tags for Twitter/X previews
+- Favicon + apple-touch-icon + manifest links
+- Theme color for browser chrome styling
+
+The home page (`index.html`) additionally has **Schema.org JSON-LD structured data** as an `AccountingService`, which helps Google understand who you are for local search and rich snippets.
+
+### Portal pages
+All 10 portal pages (dashboard, documents, returns, bookkeeping, messages, signatures, projections, calendar, help, settings) have `<meta name="robots" content="noindex, nofollow">` so Google won't index them — they're behind authentication anyway.
+
+### Before launch checklist
+
+1. **Convert favicon.svg to .ico** (optional, for older browsers):
+   - Go to [realfavicongenerator.net](https://realfavicongenerator.net/)
+   - Upload `favicon.svg`
+   - Download the generated package
+   - Add the generated `favicon.ico` to your site root
+   
+2. **Convert og-image.svg to PNG** (required for some social platforms — LinkedIn and Facebook strongly prefer PNG/JPG):
+   - Open `og-image.svg` in Figma, Sketch, or online SVG-to-PNG converter
+   - Export at 1200×630 as PNG, save as `og-image.png`
+   - Update the Open Graph `og:image` references from `.svg` to `.png` in all HTML files
+
+3. **Update URLs once you have a real domain:**
+   - Search all HTML files for `hyktax.com` and replace with your real domain
+   - Update `sitemap.xml` with your real domain
+   - Update `robots.txt` with your real sitemap URL
+
+4. **Submit to Google:**
+   - Create a [Google Search Console](https://search.google.com/search-console) property
+   - Verify domain ownership (DNS TXT record or HTML file upload)
+   - Submit your `sitemap.xml`
+   - Submit each public page for indexing
+
+5. **Test social previews** after deploying:
+   - [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) — paste your URL, see the preview
+   - [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+   - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
+   - WhatsApp/iMessage — just share the URL in a test chat
+
+6. **Google Business Profile:**
+   - Claim your business at [business.google.com](https://business.google.com/)
+   - Use the same name, phone, and address as in the Schema.org data (consistency matters for local SEO)
